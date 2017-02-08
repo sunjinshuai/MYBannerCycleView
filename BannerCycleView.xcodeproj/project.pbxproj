@@ -18,10 +18,6 @@
 		4CDFAEF41E4B5D4B00E3F8E3 /* BannerCycleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDFAEF31E4B5D4B00E3F8E3 /* BannerCycleView.m */; };
 		4CDFAEF71E4B5F4E00E3F8E3 /* UIView+Extesion.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDFAEF61E4B5F4E00E3F8E3 /* UIView+Extesion.m */; };
 		4CDFAEFA1E4B602A00E3F8E3 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDFAEF91E4B602A00E3F8E3 /* UIColor+Extension.m */; };
-		4CDFAEFF1E4B628800E3F8E3 /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4CDFAEFB1E4B628800E3F8E3 /* 1.jpg */; };
-		4CDFAF001E4B628800E3F8E3 /* 2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4CDFAEFC1E4B628800E3F8E3 /* 2.jpg */; };
-		4CDFAF011E4B628800E3F8E3 /* 3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4CDFAEFD1E4B628800E3F8E3 /* 3.jpg */; };
-		4CDFAF021E4B628800E3F8E3 /* 4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4CDFAEFE1E4B628800E3F8E3 /* 4.jpg */; };
 		4CDFAF051E4B62D000E3F8E3 /* BannerViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDFAF041E4B62D000E3F8E3 /* BannerViewCell.m */; };
 /* End PBXBuildFile section */
 
@@ -65,10 +61,6 @@
 		4CDFAEF61E4B5F4E00E3F8E3 /* UIView+Extesion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extesion.m"; sourceTree = "<group>"; };
 		4CDFAEF81E4B602A00E3F8E3 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
 		4CDFAEF91E4B602A00E3F8E3 /* UIColor+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
-		4CDFAEFB1E4B628800E3F8E3 /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
-		4CDFAEFC1E4B628800E3F8E3 /* 2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2.jpg; sourceTree = "<group>"; };
-		4CDFAEFD1E4B628800E3F8E3 /* 3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3.jpg; sourceTree = "<group>"; };
-		4CDFAEFE1E4B628800E3F8E3 /* 4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 4.jpg; sourceTree = "<group>"; };
 		4CDFAF031E4B62D000E3F8E3 /* BannerViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BannerViewCell.h; sourceTree = "<group>"; };
 		4CDFAF041E4B62D000E3F8E3 /* BannerViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BannerViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -172,10 +164,6 @@
 				4CDFAEF61E4B5F4E00E3F8E3 /* UIView+Extesion.m */,
 				4CDFAEF81E4B602A00E3F8E3 /* UIColor+Extension.h */,
 				4CDFAEF91E4B602A00E3F8E3 /* UIColor+Extension.m */,
-				4CDFAEFB1E4B628800E3F8E3 /* 1.jpg */,
-				4CDFAEFC1E4B628800E3F8E3 /* 2.jpg */,
-				4CDFAEFD1E4B628800E3F8E3 /* 3.jpg */,
-				4CDFAEFE1E4B628800E3F8E3 /* 4.jpg */,
 			);
 			path = BannerCycleView;
 			sourceTree = "<group>";
@@ -287,10 +275,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4CDFAECE1E4B5AF100E3F8E3 /* LaunchScreen.storyboard in Resources */,
-				4CDFAF021E4B628800E3F8E3 /* 4.jpg in Resources */,
-				4CDFAEFF1E4B628800E3F8E3 /* 1.jpg in Resources */,
-				4CDFAF001E4B628800E3F8E3 /* 2.jpg in Resources */,
-				4CDFAF011E4B628800E3F8E3 /* 3.jpg in Resources */,
 				4CDFAECB1E4B5AF100E3F8E3 /* Assets.xcassets in Resources */,
 				4CDFAEC91E4B5AF100E3F8E3 /* Main.storyboard in Resources */,
 			);
