@@ -8,11 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, BannerCycleViewType) {
+    BannerCycleViewTypeDefault, // default
+    BannerCycleViewTypePage,   // left
+};
+
 typedef NS_ENUM(NSInteger, BannerCyclePageControlPosition) {
     BannerCyclePageControlPositionCenter, // default
     BannerCyclePageControlPositionLeft,   // left
     BannerCyclePageControlPositionRight,  // right
 };
+
 @class BannerCycleView;
 
 @protocol BannerCycleViewDataSource <NSObject>
@@ -73,6 +79,8 @@ typedef NS_ENUM(NSInteger, BannerCyclePageControlPosition) {
 @property (nonatomic, assign) CGSize itemSize;
 /** 子视图间隔 */
 @property (nonatomic, assign) CGFloat itemSpace;
+/** 子视图距父视图间距 */
+@property (nonatomic, assign) CGFloat itemMargin;
 /** 数据源 */
 @property (nonatomic, weak) id <BannerCycleViewDataSource> dataSource;
 /** 代理 */
@@ -89,6 +97,8 @@ typedef NS_ENUM(NSInteger, BannerCyclePageControlPosition) {
 @property (nonatomic, assign) BOOL cycleEnabled;
 /** 自动滚动间隔(default = 0) */
 @property (nonatomic, assign) CGFloat timeInterval;
+
+- (instancetype)initWithType:(BannerCycleViewType)type;
 
 /** 重新载入视图 */
 - (void)reloadData;

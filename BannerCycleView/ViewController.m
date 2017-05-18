@@ -42,17 +42,21 @@ static NSString * const reusableProductViewIdentifier = @"BannerViewCell";
 
 - (CGSize)cycleView:(BannerCycleView *)cycleView sizeForItemAtRow:(NSInteger)row
 {
-    return CGSizeMake(SCREEN_WIDTH, 180);
+    return CGSizeMake(SCREEN_WIDTH - 40, 180);
 }
 
 #pragma mark - getter and setter
 - (BannerCycleView *)cycleView
 {
     if (_cycleView == nil) {
-        _cycleView = [[BannerCycleView alloc] initWithFrame:CGRectMake(0, 200, SCREEN_WIDTH, 180)];
+        _cycleView = [[BannerCycleView alloc] initWithType:BannerCycleViewTypeDefault];
+        _cycleView.frame = CGRectMake(0, 200, SCREEN_WIDTH, 200);
+        _cycleView.itemSize = CGSizeMake(SCREEN_WIDTH - 40, 180);
         _cycleView.dataSource = self;
         _cycleView.delegate = self;
         _cycleView.showPageControl = YES;
+        _cycleView.itemSpace = 5;
+        _cycleView.itemMargin = 20;
         _cycleView.timeInterval = 2.f;
         [_cycleView registerClass:[BannerViewCell class] forCellWithReuseIdentifier:reusableProductViewIdentifier];
     }

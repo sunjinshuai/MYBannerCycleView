@@ -9,8 +9,11 @@
 #import "BannerCycleView.h"
 #import "UIView+Extesion.h"
 #import "UIColor+Extension.h"
+#import "BannerCycleCollectionViewFlowLayout.h"
 
 @interface BannerCycleView ()<UICollectionViewDelegate,UICollectionViewDataSource>
+
+@property (nonatomic, assign) BannerCycleViewType type;
 
 @property (nonatomic, assign) NSInteger multiplier;
 
@@ -39,6 +42,26 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
+        self.itemMargin = 0;
+        self.itemSpace = 0;
+        self.cycleEnabled = YES;
+        [self setup];
+    }
+    return self;
+}
+
+- (instancetype)initWithType:(BannerCycleViewType)type
+{
+    if (self = [super init]) {
+        self.type = type;
+    }
+    return self;
+}
+
+- (instancetype)init
+{
+    if (self = [super init]) {
+        self.itemMargin = 0;
         self.itemSpace = 0;
         self.cycleEnabled = YES;
         [self setup];
@@ -49,6 +72,9 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
+    self.itemMargin = 0;
+    self.itemSpace = 0;
+    self.cycleEnabled = YES;
     [self setup];
 }
 
@@ -56,9 +82,6 @@
 {
     self.collectionView.frame = self.bounds;
     [self addSubview:self.collectionView];
-    
-    self.collectionView.clipsToBounds = NO;
-    self.clipsToBounds = NO;
 }
 
 - (void)layoutSubviews
@@ -72,20 +95,17 @@
     
     self.pageControl.width = [self.pageControl sizeForNumberOfPages:self.itemCount].width;
     switch (self.pageControlPosition) {
-        case BannerCyclePageControlPositionCenter:
-        {
+        case BannerCyclePageControlPositionCenter: {
             self.pageControl.centerX = self.collectionView.centerX + self.pageControlOffset.x;
             self.pageControl.bottom = self.collectionView.bounds.size.height - 15.0f + self.pageControlOffset.y;
             break;
         }
-        case BannerCyclePageControlPositionLeft:
-        {
+        case BannerCyclePageControlPositionLeft: {
             self.pageControl.left = 0 + self.pageControlOffset.x;
             self.pageControl.bottom = self.collectionView.bounds.size.height - 15.0f + self.pageControlOffset.y;
             break;
         }
-        case BannerCyclePageControlPositionRight:
-        {
+        case BannerCyclePageControlPositionRight: {
             self.pageControl.right = self.collectionView.right + self.pageControlOffset.x;
             self.pageControl.bottom = self.collectionView.bounds.size.height - 15.0f + self.pageControlOffset.y;
             break;
@@ -102,7 +122,11 @@
     if ([self.dataSource respondsToSelector:@selector(numberOfRowsInCycleView:)]) {
         self.itemCount = [self.dataSource numberOfRowsInCycleView:self];
     }
-    [self startTimer];
+    if (self.itemCount > 1 && self.timeInterval > 0) {
+        [self startTimer];
+    } else {
+        [self stopTimer];
+    }
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -142,6 +166,14 @@
     return self.itemSpace;
 }
 
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    if (self.type == BannerCycleViewTypeDefault) {
+        return UIEdgeInsetsMake(0, self.itemMargin, 0, 0);
+    }
+    return UIEdgeInsetsZero;
+}
+
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -158,6 +190,13 @@
         [self.delegate cycleView:self didScrollToItemAtRow:self.index];
     }
     self.pageControl.currentPage = self.index;
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    if (self.type == BannerCycleViewTypeDefault) {
+        [self scrollViewDidEndDecelerating:scrollView];
+    }
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
@@ -234,7 +273,11 @@
     if ([self.dataSource respondsToSelector:@selector(numberOfRowsInCycleView:)]) {
         self.itemCount = [self.dataSource numberOfRowsInCycleView:self];
     }
-    [self startTimer];
+    if (self.itemCount > 1 && self.type == BannerCycleViewTypePage && self.timeInterval > 0) {
+        [self startTimer];
+    } else {
+        [self stopTimer];
+    }
 }
 
 - (void)scrollToIndex:(NSInteger)index animation:(BOOL)animation
@@ -278,7 +321,21 @@
 
 - (CGSize)itemSizeWithIndex:(NSInteger)index
 {
-   return self.collectionView.bounds.size;
+    if (self.type == BannerCycleViewTypePage) {
+        return self.collectionView.bounds.size;
+    }
+    
+    if (self.itemSize.height <= 0) {
+        self.itemSize = CGSizeMake(self.collectionView.frame.size.width / 2.0f, self.collectionView.frame.size.height);
+    }
+    
+    CGSize resultSize = self.itemSize;
+    
+    if ([self.delegate respondsToSelector:@selector(cycleView:sizeForItemAtRow:)]) {
+        resultSize = [self.delegate cycleView:self sizeForItemAtRow:index];
+    }
+    
+    return resultSize;
 }
 
 - (__kindof UICollectionViewCell *)dequeueReusableCellWithReuseIdentifier:(NSString *)identifier forRow:(NSInteger)row
@@ -297,16 +354,41 @@
 - (UICollectionView *)collectionView
 {
     if (_collectionView == nil) {
-        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-        [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
-        flowLayout.minimumInteritemSpacing = self.itemSpace;
-        flowLayout.minimumLineSpacing = self.itemSpace;
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
-        _collectionView.delegate = self;
-        _collectionView.dataSource = self;
-        _collectionView.showsHorizontalScrollIndicator = NO;
-        _collectionView.backgroundColor = [UIColor clearColor];
-        _collectionView.pagingEnabled = YES;
+        
+        switch (self.type) {
+            case BannerCycleViewTypeDefault:
+            {
+                BannerCycleCollectionViewFlowLayout *flowLayout = [[BannerCycleCollectionViewFlowLayout alloc] init];
+                [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+                flowLayout.minimumInteritemSpacing = self.itemSpace;
+                flowLayout.minimumLineSpacing = self.itemSpace;
+                _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
+                _collectionView.delegate = self;
+                _collectionView.dataSource = self;
+                _collectionView.showsHorizontalScrollIndicator = NO;
+                _collectionView.backgroundColor = [UIColor clearColor];
+                _collectionView.pagingEnabled = YES;
+                break;
+            }
+            case BannerCycleViewTypePage:
+            {
+                UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+                [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+                flowLayout.minimumInteritemSpacing = self.itemSpace;
+                flowLayout.minimumLineSpacing = self.itemSpace;
+                _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
+                _collectionView.delegate = self;
+                _collectionView.dataSource = self;
+                _collectionView.showsHorizontalScrollIndicator = NO;
+                _collectionView.backgroundColor = [UIColor clearColor];
+                _collectionView.pagingEnabled = YES;
+                break;
+            }
+                
+            default:
+                break;
+        }
+        
     }
     return _collectionView;
 }

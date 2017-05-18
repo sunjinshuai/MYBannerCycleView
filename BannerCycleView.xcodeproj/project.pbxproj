@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4CB5C1751ECD4BD300D8A71D /* BannerCycleCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB5C1741ECD4BD300D8A71D /* BannerCycleCollectionViewFlowLayout.m */; };
 		4CDFAEC01E4B5AF100E3F8E3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDFAEBF1E4B5AF100E3F8E3 /* main.m */; };
 		4CDFAEC31E4B5AF100E3F8E3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDFAEC21E4B5AF100E3F8E3 /* AppDelegate.m */; };
 		4CDFAEC61E4B5AF100E3F8E3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDFAEC51E4B5AF100E3F8E3 /* ViewController.m */; };
@@ -39,6 +40,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4CB5C1731ECD4BD300D8A71D /* BannerCycleCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BannerCycleCollectionViewFlowLayout.h; sourceTree = "<group>"; };
+		4CB5C1741ECD4BD300D8A71D /* BannerCycleCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BannerCycleCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		4CDFAEBB1E4B5AF100E3F8E3 /* BannerCycleView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BannerCycleView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CDFAEBF1E4B5AF100E3F8E3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4CDFAEC11E4B5AF100E3F8E3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -160,6 +163,8 @@
 			children = (
 				4CDFAEF21E4B5D4B00E3F8E3 /* BannerCycleView.h */,
 				4CDFAEF31E4B5D4B00E3F8E3 /* BannerCycleView.m */,
+				4CB5C1731ECD4BD300D8A71D /* BannerCycleCollectionViewFlowLayout.h */,
+				4CB5C1741ECD4BD300D8A71D /* BannerCycleCollectionViewFlowLayout.m */,
 				4CDFAEF51E4B5F4E00E3F8E3 /* UIView+Extesion.h */,
 				4CDFAEF61E4B5F4E00E3F8E3 /* UIView+Extesion.m */,
 				4CDFAEF81E4B602A00E3F8E3 /* UIColor+Extension.h */,
@@ -304,6 +309,7 @@
 				4CDFAEC61E4B5AF100E3F8E3 /* ViewController.m in Sources */,
 				4CDFAEFA1E4B602A00E3F8E3 /* UIColor+Extension.m in Sources */,
 				4CDFAEF41E4B5D4B00E3F8E3 /* BannerCycleView.m in Sources */,
+				4CB5C1751ECD4BD300D8A71D /* BannerCycleCollectionViewFlowLayout.m in Sources */,
 				4CDFAEC31E4B5AF100E3F8E3 /* AppDelegate.m in Sources */,
 				4CDFAEF71E4B5F4E00E3F8E3 /* UIView+Extesion.m in Sources */,
 				4CDFAEC01E4B5AF100E3F8E3 /* main.m in Sources */,
@@ -537,6 +543,7 @@
 				4CDFAEEA1E4B5AF100E3F8E3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4CDFAEEB1E4B5AF100E3F8E3 /* Build configuration list for PBXNativeTarget "BannerCycleViewTests" */ = {
 			isa = XCConfigurationList;
@@ -545,6 +552,7 @@
 				4CDFAEED1E4B5AF100E3F8E3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4CDFAEEE1E4B5AF100E3F8E3 /* Build configuration list for PBXNativeTarget "BannerCycleViewUITests" */ = {
 			isa = XCConfigurationList;
@@ -553,6 +561,7 @@
 				4CDFAEF01E4B5AF100E3F8E3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
