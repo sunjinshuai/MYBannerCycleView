@@ -18,7 +18,6 @@ typedef NS_ENUM(NSUInteger, FXPagerScrollDirection) {
 };
 
 @class FXCyclePagerView;
-
 @protocol FXCyclePagerViewDataSource <NSObject>
 
 - (NSInteger)numberOfItemsInPagerView:(FXCyclePagerView *)pageView;
@@ -97,7 +96,7 @@ typedef NS_ENUM(NSUInteger, FXPagerScrollDirection) {
  */
 @property (nonatomic, assign, readonly) NSInteger curIndex;
 
-// scrollView properFX
+// scrollView property
 @property (nonatomic, assign, readonly) CGPoint contentOffset;
 @property (nonatomic, assign, readonly) BOOL tracking;
 @property (nonatomic, assign, readonly) BOOL dragging;
@@ -168,4 +167,3 @@ typedef NS_ENUM(NSUInteger, FXPagerScrollDirection) {
 @end
 
 NS_ASSUME_NONNULL_END
-

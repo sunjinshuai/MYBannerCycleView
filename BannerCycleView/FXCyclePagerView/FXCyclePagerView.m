@@ -493,9 +493,9 @@ NS_INLINE FXIndexSection FXMakeIndexSection(NSInteger index, NSInteger section) 
     }
 }
 
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelociFX:(CGPoint)velociFX targetContentOffset:(inout CGPoint *)targetContentOffset {
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     //NSLog(@"scrollViewWillEndDragging %lf %lf",scrollView.contentOffset.x,targetContentOffset->x);
-    if (fabs(velociFX.x) < 0.35 || !FXEqualIndexSection(_beginDragIndexSection, _indexSection)) {
+    if (fabs(velocity.x) < 0.35 || !FXEqualIndexSection(_beginDragIndexSection, _indexSection)) {
         targetContentOffset->x = [self caculateOffsetXAtIndexSection:_indexSection];
         return;
     }
