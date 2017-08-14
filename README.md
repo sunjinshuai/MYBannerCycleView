@@ -1,15 +1,9 @@
-
+# BannerCycleView
 
 **BannerCycleView**是用UICollectionView实现的，使用的时候也特别简单，就跟使用UICollectionView一样的清爽。
 
 - [我的github](https://github.com/sunjinshuai)
 - [我的个人博客](https://sunjinshuai.github.io/)
-
-项目地址；https://github.com/sunjinshuai/BannerCycleView
-代码规范，结构清晰，个人感觉没有一点冗余代码，欢迎各路大神批评指正。
-喜欢的可以给star。
-
-![效果图][1]
 
 ![BannerCycleView.gif](http://upload-images.jianshu.io/upload_images/588630-ed997a60d2dbc4a9.gif?imageMogr2/auto-orient/strip)
 
@@ -74,3 +68,5 @@ BannerCyclePageControlPositionRight
 ```
 
 看是不是像UICollectionView一样的清爽。
+代码规范，结构清晰，个人感觉没有一点冗余代码，欢迎各路大神批评指正。
+喜欢的可以给star。
