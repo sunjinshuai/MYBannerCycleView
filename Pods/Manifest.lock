@@ -1,0 +1,24 @@
+PODS:
+  - MYKit (1.1.2):
+    - MYKit/Foundation (= 1.1.2)
+    - MYKit/SafeKit (= 1.1.2)
+    - MYKit/UIKit (= 1.1.2)
+  - MYKit/Foundation (1.1.2)
+  - MYKit/SafeKit (1.1.2):
+    - MYKit/Foundation
+  - MYKit/UIKit (1.1.2):
+    - MYKit/Foundation
+
+DEPENDENCIES:
+  - MYKit
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - MYKit
+
+SPEC CHECKSUMS:
+  MYKit: 338258b9f984b07fe808216d2c77f4f33d3c2379
+
+PODFILE CHECKSUM: 895f573b2ca394db770b82e60e5c3c2055b35c40
+
+COCOAPODS: 1.5.3
