@@ -27,8 +27,6 @@
 
 @property (nonatomic, assign) NSInteger visibleRow;
 
-@property (nonatomic, strong) UIPageControl *pageControl;
-
 @property (nonatomic, strong) NSTimer *myTimer;
 
 @end
@@ -68,30 +66,6 @@
     if (frame.size.width > 0 && frame.size.height > 0) {
         self.collectionView.frame = frame;
     }
-    
-    self.pageControl.width = [self.pageControl sizeForNumberOfPages:self.itemCount].width;
-    switch (self.pageControlPosition) {
-        case BannerCyclePageControlPositionCenter:
-        {
-            self.pageControl.centerX = self.collectionView.centerX + self.pageControlOffset.x;
-            self.pageControl.bottom = self.collectionView.bounds.size.height - 15.0f + self.pageControlOffset.y;
-            break;
-        }
-        case BannerCyclePageControlPositionLeft:
-        {
-            self.pageControl.left = 0 + self.pageControlOffset.x;
-            self.pageControl.bottom = self.collectionView.bounds.size.height - 15.0f + self.pageControlOffset.y;
-            break;
-        }
-        case BannerCyclePageControlPositionRight:
-        {
-            self.pageControl.right = self.collectionView.right + self.pageControlOffset.x;
-            self.pageControl.bottom = self.collectionView.bounds.size.height - 15.0f + self.pageControlOffset.y;
-            break;
-        }
-        default:
-            break;
-    }
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview
@@ -110,7 +84,6 @@
     if ([self.dataSource respondsToSelector:@selector(numberOfRowsInCycleView:)]) {
         self.itemCount = [self.dataSource numberOfRowsInCycleView:self];
     }
-    self.pageControl.numberOfPages = self.itemCount;
     return self.itemCount * self.multiplier;
 }
 
@@ -156,7 +129,6 @@
     if ([self.delegate respondsToSelector:@selector(cycleView:didScrollToItemAtRow:)]) {
         [self.delegate cycleView:self didScrollToItemAtRow:self.index];
     }
-    self.pageControl.currentPage = self.index;
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
@@ -208,7 +180,7 @@
     }
 }
 
--(void)resumeTimer
+- (void)resumeTimer
 {
     if (![self.myTimer isValid]) {
         return;
@@ -227,7 +199,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self adjustCollectionView];
         [self scrollToIndex:0 animation:NO];
-        self.pageControl.currentPage = 0;
     });
     
     if ([self.dataSource respondsToSelector:@selector(numberOfRowsInCycleView:)]) {
@@ -254,7 +225,7 @@
     if ([self.delegate respondsToSelector:@selector(cycleView:didScrollToItemAtRow:)]) {
         [self.delegate cycleView:self didScrollToItemAtRow:nextIndex];
     }
-    self.pageControl.currentPage = nextIndex;
+    
     [self.collectionView setContentOffset:CGPointMake(self.collectionView.contentOffset.x + [self itemSizeWithIndex:nextIndex].width + self.itemSpace, self.collectionView.contentOffset.y) animated:YES];
 }
 
@@ -271,7 +242,7 @@
     if ([self.delegate respondsToSelector:@selector(cycleView:didScrollToItemAtRow:)]) {
         [self.delegate cycleView:self didScrollToItemAtRow:previousIndex];
     }
-    self.pageControl.currentPage = previousIndex;
+    
     [self.collectionView setContentOffset:CGPointMake(self.collectionView.contentOffset.x - [self itemSizeWithIndex:previousIndex].width - self.itemSpace, self.collectionView.contentOffset.y) animated:YES];
 }
 
@@ -341,28 +312,6 @@
     return _cellReusableDictionary;
 }
 
-- (UIPageControl *)pageControl
-{
-    if (_pageControl == nil) {
-        _pageControl = [[UIPageControl alloc] init];
-        _pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:0 alpha:0.2f];
-        _pageControl.currentPageIndicatorTintColor = [UIColor redColor];
-        _pageControl.currentPage = 0;
-    }
-    return _pageControl;
-}
-
-- (void)setShowPageControl:(BOOL)showPageControl
-{
-    _showPageControl = showPageControl;
-    
-    if (showPageControl) {
-        [self addSubview:self.pageControl];
-    } else {
-        [self.pageControl removeFromSuperview];
-    }
-}
-
 - (void)setCycleEnabled:(BOOL)cycleEnabled
 {
     _cycleEnabled = cycleEnabled;
@@ -392,14 +341,6 @@
         self.multiplier = 20;
     } else {
         self.multiplier = 1;
-    }
-    
-    if (self.showPageControl) {
-        if (itemCount > 1) {
-            self.pageControl.hidden = NO;
-        } else {
-            self.pageControl.hidden = YES;
-        }
     }
 }
 

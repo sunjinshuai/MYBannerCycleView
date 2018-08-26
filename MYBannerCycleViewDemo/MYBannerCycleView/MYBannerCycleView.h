@@ -8,11 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, BannerCyclePageControlPosition) {
-    BannerCyclePageControlPositionCenter, // default
-    BannerCyclePageControlPositionLeft,   // left
-    BannerCyclePageControlPositionRight,  // right
-};
 @class MYBannerCycleView;
 
 @protocol MYBannerCycleViewDataSource <NSObject>
@@ -69,34 +64,50 @@ typedef NS_ENUM(NSInteger, BannerCyclePageControlPosition) {
 
 @interface MYBannerCycleView : UIView
 
-/** 子视图大小 */
+/**
+ 子视图大小
+ */
 @property (nonatomic, assign) CGSize itemSize;
-/** 子视图间隔 */
+/**
+ 子视图间隔
+ */
 @property (nonatomic, assign) CGFloat itemSpace;
-/** 数据源 */
+/**
+ 数据源
+ */
 @property (nonatomic, weak) id <MYBannerCycleViewDataSource> dataSource;
-/** 代理 */
+/**
+ 代理
+ */
 @property (nonatomic, weak) id <MYBannerCycleViewDelegate> delegate;
-/** 当前索引 */
+/**
+ 当前索引
+ */
 @property (nonatomic, assign, readonly) NSInteger index;
-/** 是否显示页面指示器 */
-@property (nonatomic, assign) BOOL showPageControl;
-/** 页面指示器显示位置 */
-@property (nonatomic, assign) BannerCyclePageControlPosition pageControlPosition;
-/** 用于设置页面指示器位置偏移 */
-@property (nonatomic, assign) CGPoint pageControlOffset;
-/** 是否循环(default = YES) */
+/**
+ 是否循环(default = YES)
+ */
 @property (nonatomic, assign) BOOL cycleEnabled;
-/** 自动滚动间隔(default = 0) */
+/**
+ 自动滚动间隔(default = 0)
+ */
 @property (nonatomic, assign) CGFloat timeInterval;
 
-/** 重新载入视图 */
+/**
+ 重新载入视图
+ */
 - (void)reloadData;
-/** 滚动到下一个子视图 */
+/**
+ 滚动到下一个子视图
+ */
 - (void)scrollToNextIndex;
-/** 滚动到上一个子视图 */
+/**
+ 滚动到上一个子视图
+ */
 - (void)scrollToPreviousIndex;
-/** 滚动到指定索引 */
+/**
+ 滚动到指定索引
+ */
 - (void)scrollToIndex:(NSInteger)index animation:(BOOL)animation;
 /**
  *  注册子视图
