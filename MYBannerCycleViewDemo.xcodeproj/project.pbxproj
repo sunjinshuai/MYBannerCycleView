@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		325BED2421329967002EB0D5 /* MYBannerCycleViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 325BED2321329967002EB0D5 /* MYBannerCycleViewCell.m */; };
+		325BED2721329D83002EB0D5 /* MYPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 325BED2621329D83002EB0D5 /* MYPageControl.m */; };
 		814DFD2D213011A100A1FE3B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 814DFD2C213011A100A1FE3B /* AppDelegate.m */; };
 		814DFD30213011A100A1FE3B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 814DFD2F213011A100A1FE3B /* ViewController.m */; };
 		814DFD33213011A100A1FE3B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 814DFD31213011A100A1FE3B /* Main.storyboard */; };
@@ -42,6 +43,8 @@
 		2AFEE2944E05C48FB4FB1B58 /* libPods-MYBannerCycleViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MYBannerCycleViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		325BED2221329967002EB0D5 /* MYBannerCycleViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MYBannerCycleViewCell.h; sourceTree = "<group>"; };
 		325BED2321329967002EB0D5 /* MYBannerCycleViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MYBannerCycleViewCell.m; sourceTree = "<group>"; };
+		325BED2521329D83002EB0D5 /* MYPageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MYPageControl.h; sourceTree = "<group>"; };
+		325BED2621329D83002EB0D5 /* MYPageControl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MYPageControl.m; sourceTree = "<group>"; };
 		5DFBB25A376FD41052A6B43E /* Pods-MYBannerCycleViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MYBannerCycleViewDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MYBannerCycleViewDemo/Pods-MYBannerCycleViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		814DFD28213011A100A1FE3B /* MYBannerCycleViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MYBannerCycleViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		814DFD2B213011A100A1FE3B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -167,6 +170,8 @@
 				814DFD5F2130121F00A1FE3B /* UIView+Addition.m */,
 				814DFD612130126400A1FE3B /* MYBannerCycleView.h */,
 				814DFD622130126400A1FE3B /* MYBannerCycleView.m */,
+				325BED2521329D83002EB0D5 /* MYPageControl.h */,
+				325BED2621329D83002EB0D5 /* MYPageControl.m */,
 			);
 			path = MYBannerCycleView;
 			sourceTree = "<group>";
@@ -339,6 +344,7 @@
 				814DFD30213011A100A1FE3B /* ViewController.m in Sources */,
 				814DFD632130126400A1FE3B /* MYBannerCycleView.m in Sources */,
 				814DFD3B213011A400A1FE3B /* main.m in Sources */,
+				325BED2721329D83002EB0D5 /* MYPageControl.m in Sources */,
 				814DFD2D213011A100A1FE3B /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
