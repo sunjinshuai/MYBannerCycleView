@@ -15,20 +15,8 @@
 
 @interface ViewController ()<MYBannerCycleViewDataSource, MYBannerCycleViewDelegate>
 
-/**
- 左右滑动
- */
 @property (nonatomic, strong) MYBannerCycleView *bannerCycleView;
-
-/**
- 上下滑动
- */
-@property (nonatomic, strong) MYBannerCycleView *bottomBannerView;
-
-/**
- 防淘宝拖拽
- */
-@property (nonatomic, strong) MYBannerCycleView *taobaoBannerView;
+@property (nonatomic, strong) MYBannerCycleView *goodDetailBannerView;
 @property (nonatomic, strong) MYPageControl *pageControl;
 @property (nonatomic, strong) MYBannerFooterView *footer;
 
@@ -43,11 +31,10 @@
     
     [self addPageControl];
     
-    _pageControl.numberOfPages = 6;
+    _pageControl.numberOfPages = self.customBannerViewImages.count;
     
     [self.bannerCycleView reloadData];
-    [self.bottomBannerView reloadData];
-    [self.taobaoBannerView reloadData];
+    [self.goodDetailBannerView reloadData];
 }
 
 - (void)addBannerCycleView {
@@ -57,29 +44,20 @@
     bannerCycleView.emptyImage = [UIImage imageNamed:@"placeholder"];
     bannerCycleView.autoScroll = YES;
     bannerCycleView.repeatCount = 10;
-    bannerCycleView.bannerViewScrollDirection = BannerViewDirectionRight;
+    bannerCycleView.bannerViewScrollDirection = BannerViewDirectionTop;
     [bannerCycleView registerClass:[MYBannerCycleViewCell class] forCellWithReuseIdentifier:NSStringFromClass([MYBannerCycleViewCell class])];
     [self.view addSubview:bannerCycleView];
     _bannerCycleView = bannerCycleView;
     
-    MYBannerCycleView *bottomBannerView = [[MYBannerCycleView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(bannerCycleView.frame), [UIScreen mainScreen].bounds.size.width, 180)];
-    bottomBannerView.delegate = self;
-    bottomBannerView.dataSource = self;
-    bottomBannerView.emptyImage = [UIImage imageNamed:@"placeholder"];
-    bannerCycleView.bannerViewScrollDirection = BannerViewDirectionTop;
-    [bottomBannerView registerClass:[MYBannerCycleViewCell class] forCellWithReuseIdentifier:NSStringFromClass([MYBannerCycleViewCell class])];
-    [self.view addSubview:bottomBannerView];
-    _bottomBannerView = bottomBannerView;
-    
-    MYBannerCycleView *taobaoBannerView = [[MYBannerCycleView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(bottomBannerView.frame), [UIScreen mainScreen].bounds.size.width, 180)];
-    taobaoBannerView.delegate = self;
-    taobaoBannerView.dataSource = self;
-    taobaoBannerView.emptyImage = [UIImage imageNamed:@"placeholder"];
-    taobaoBannerView.showFooter = YES;
-    [taobaoBannerView registerClass:[MYBannerCycleViewCell class] forCellWithReuseIdentifier:NSStringFromClass([MYBannerCycleViewCell class])];
-    [taobaoBannerView registerClass:[MYBannerFooterView class] forFooterWithReuseIdentifier:NSStringFromClass([MYBannerFooterView class])];
-    [self.view addSubview:taobaoBannerView];
-    _taobaoBannerView = taobaoBannerView;
+    MYBannerCycleView *goodDetailBannerView = [[MYBannerCycleView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(bannerCycleView.frame), [UIScreen mainScreen].bounds.size.width, 180)];
+    goodDetailBannerView.delegate = self;
+    goodDetailBannerView.dataSource = self;
+    goodDetailBannerView.emptyImage = [UIImage imageNamed:@"placeholder"];
+    goodDetailBannerView.showFooter = YES;
+    [goodDetailBannerView registerClass:[MYBannerCycleViewCell class] forCellWithReuseIdentifier:NSStringFromClass([MYBannerCycleViewCell class])];
+    [goodDetailBannerView registerClass:[MYBannerFooterView class] forFooterWithReuseIdentifier:NSStringFromClass([MYBannerFooterView class])];
+    [self.view addSubview:goodDetailBannerView];
+    _goodDetailBannerView = goodDetailBannerView;
 }
 
 - (void)addPageControl {
@@ -94,8 +72,8 @@
 }
 
 #pragma mark - DataSource
-- (NSInteger)numberOfRowsInCycleView:(MYBannerCycleView *)cycleView {
-    return 6;
+- (NSArray *)bannerViewImages:(MYBannerCycleView *)bannerView {
+    return self.customBannerViewImages;
 }
 
 - (UICollectionViewCell *)cycleView:(MYBannerCycleView *)cycleView cellForItemAtRow:(NSInteger)row {
@@ -132,7 +110,14 @@
 }
 
 - (void)cycleView:(MYBannerCycleView *)bannerView didScrollCurrentIndex:(NSInteger)currentIndex contentOffset:(CGFloat)contentOffset {
-    NSLog(@"currentIndex-->%ld : contentOffset-->%f", (long)currentIndex, contentOffset);
+    NSLog(@"currentIndex-->%d : contentOffset-->%f", currentIndex, contentOffset);
+}
+
+- (NSArray *)customBannerViewImages{
+    return @[@"http://img.zcool.cn/community/01f5ce56e112ef6ac72531cb37bec4.png@900w_1l_2o_100sh.jpg",
+             @"http://img.zcool.cn/community/01c41656cbf3eb32f875520f71f47a.png",
+             @"http://pic.58pic.com/58pic/17/27/94/54d350c57f5f8_1024.jpg"
+             ];
 }
 
 @end

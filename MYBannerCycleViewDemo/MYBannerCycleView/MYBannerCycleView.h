@@ -14,6 +14,13 @@
 @protocol MYBannerCycleViewDataSource <NSObject>
 
 @required
+/**
+ 显示Banner数据源代理方法
+ 
+ @param bannerView 当前Banner
+ @return 兼容 http(s):// 和 本地图片Name 类型: NSString 数组
+ */
+- (NSArray *)bannerViewImages:(MYBannerCycleView *)bannerView;
 
 /**
  代理方法取轮播总数（参考UITableView或UICollectionView）
