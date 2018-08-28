@@ -56,103 +56,8 @@ static NSInteger const totalCollectionViewCellCount = 200;
     return self;
 }
 
-- (void)reloadData {
-    
-    [self invalidateTimer];
-    self.showNewDatasource = [self _getImageDataSources];
-    
-    // Hidden when data source is greater than zero
-    self.backgroundImageView.hidden = ([self _imageDataSources].count > 0);
-    
-    if ([self _imageDataSources].count > 1) {
-        self.collectionView.scrollEnabled = YES;
-        [self setAutoScroll:self.autoScroll];
-    } else {
-        
-        if ([self _imageDataSources].count == 0) { self.showFooter = NO; }
-        
-        BOOL isCan = ([self _imageDataSources].count == 0)?NO:(self.showFooter?YES:NO);
-        
-        self.collectionView.scrollEnabled = isCan;
-        
-        [self invalidateTimerWhenAutoScroll];
-    }
-    
-    [self _setFooterViewCanShow:self.showFooter];
-    
-    [self.collectionView reloadData];
-}
-
-
-/** Initialize the default settings */
-- (void)_initSetting{
-    
-    self.backgroundColor = [UIColor whiteColor];
-    _autoDuration = 3.0;
-    _autoScroll = YES;
-    _cycleScrollEnable = YES;
-    _showFooter = NO;
-}
-
-#pragma mark - Setter && Getter
-
-
-#pragma mark - layoutSubviews
-- (void)layoutSubviews{
-    [super layoutSubviews];
-    
-    self.dataSource = self.dataSource;
-    [super layoutSubviews];
-    
-    self.flowLayout.itemSize = self.frame.size;
-    
-    self.collectionView.frame = self.bounds;
-    
-    if (self.collectionView.contentOffset.x == 0 &&  self.totalBannerItemsCount) {
-        NSInteger targetIndex = self.cycleScrollEnable?(self.totalBannerItemsCount * 0.5):(0);
-        [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
-    }
-    
-    if (self.backgroundImageView) {
-        self.backgroundImageView.frame = self.bounds;
-    }
-}
-
-#pragma mark - Resolve compatibility optimization issues
-- (void)willMoveToSuperview:(UIView *)newSuperview{
-    if (!newSuperview) {
-        [self invalidateTimer];
-    }
-}
-
-- (void)scrollToIndex:(NSInteger)index animation:(BOOL)animation {
-    if (self.showNewDatasource.count == 0) {
-        return;
-        
-    }
-    if (index >= 0 && index < self.showNewDatasource.count) {
-        if (self.autoScroll) {
-            [self invalidateTimer];
-        }
-        
-        [self _scrollToIndex:((int)(self.totalBannerItemsCount * 0.5 + index)) animated:animation];
-        
-        if (self.autoScroll) {
-            [self _setupTimer];
-        }
-    }
-}
-
-- (void)adjustBannerViewWhenCardScreen{
-    
-    long targetIndex = [self _currentPageIndex];
-    if (targetIndex < self.totalBannerItemsCount) {
-        [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
-    }
-}
-
 #pragma mark - UICollectionViewDataSource
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.totalBannerItemsCount;
 }
 
@@ -203,7 +108,6 @@ static NSInteger const totalCollectionViewCellCount = 200;
     
     if (![self _imageDataSources].count) return;
     int itemIndex = [self _currentPageIndex];
-    int indexOnPageControl = [self _getRealIndexFromCurrentCellIndex:itemIndex];
     
     // 手动退拽时左右两端
     if (scrollView == self.collectionView && scrollView.isDragging && self.cycleScrollEnable) {
@@ -278,9 +182,121 @@ static NSInteger const totalCollectionViewCellCount = 200;
     }
 }
 
+#pragma mark - Public Method
+- (void)reloadData {
+    
+    [self invalidateTimer];
+    self.showNewDatasource = [self _getImageDataSources];
+    
+    // Hidden when data source is greater than zero
+    self.backgroundImageView.hidden = ([self _imageDataSources].count > 0);
+    
+    if ([self _imageDataSources].count > 1) {
+        self.collectionView.scrollEnabled = YES;
+        [self setAutoScroll:self.autoScroll];
+    } else {
+        
+        if ([self _imageDataSources].count == 0) { self.showFooter = NO; }
+        
+        BOOL isCan = ([self _imageDataSources].count == 0)?NO:(self.showFooter?YES:NO);
+        
+        self.collectionView.scrollEnabled = isCan;
+        
+        [self invalidateTimerWhenAutoScroll];
+    }
+    
+    [self _setFooterViewCanShow:self.showFooter];
+    
+    [self.collectionView reloadData];
+}
+
+- (__kindof UICollectionViewCell *)dequeueReusableCellWithReuseIdentifier:(NSString *)identifier forRow:(NSInteger)row
+{
+    return [self.collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+}
+
+- (void)registerClass:(Class)cellClass forCellWithReuseIdentifier:(NSString *)identifier
+{
+    [self.collectionView registerClass:cellClass forCellWithReuseIdentifier:identifier];
+    self.reusableIdentifier = identifier;
+}
+
+- (void)registerClass:(nullable Class)viewClass forFooterWithReuseIdentifier:(NSString *)identifier {
+    [self.collectionView registerClass:viewClass forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:identifier];
+    self.reusableFooterIdentifier = identifier;
+}
+
+- (__kindof UICollectionReusableView *)dequeueReusableEelementKindOfFooterwithReuseIdentifier:(NSString *)identifier forIndex:(NSInteger)index {
+    return [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:identifier forIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+}
+
+- (void)scrollToIndex:(NSInteger)index animation:(BOOL)animation {
+    if (self.showNewDatasource.count == 0) {
+        return;
+        
+    }
+    if (index >= 0 && index < self.showNewDatasource.count) {
+        if (self.autoScroll) {
+            [self invalidateTimer];
+        }
+        
+        [self _scrollToIndex:((int)(self.totalBannerItemsCount * 0.5 + index)) animated:animation];
+        
+        if (self.autoScroll) {
+            [self _setupTimer];
+        }
+    }
+}
+
+- (void)adjustBannerViewWhenCardScreen{
+    
+    long targetIndex = [self _currentPageIndex];
+    if (targetIndex < self.totalBannerItemsCount) {
+        [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
+    }
+}
+
+#pragma mark - View Life
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    
+    self.dataSource = self.dataSource;
+    [super layoutSubviews];
+    
+    self.flowLayout.itemSize = self.frame.size;
+    
+    self.collectionView.frame = self.bounds;
+    
+    if (self.collectionView.contentOffset.x == 0 &&  self.totalBannerItemsCount) {
+        NSInteger targetIndex = self.cycleScrollEnable?(self.totalBannerItemsCount * 0.5):(0);
+        [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
+    }
+    
+    if (self.backgroundImageView) {
+        self.backgroundImageView.frame = self.bounds;
+    }
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview{
+    if (!newSuperview) {
+        [self invalidateTimer];
+    }
+}
+
+
 #pragma mark - Private function method
 
-/** install Timer */
+/** Initialize the default settings */
+- (void)_initSetting{
+    
+    self.backgroundColor = [UIColor whiteColor];
+    _autoDuration = 3.0;
+    _autoScroll = YES;
+    _cycleScrollEnable = YES;
+    _showFooter = NO;
+}
+
+
 - (void)_setupTimer{
     
     [self invalidateTimer];
@@ -399,25 +415,6 @@ static NSInteger const totalCollectionViewCellCount = 200;
     }
 }
 
-- (__kindof UICollectionViewCell *)dequeueReusableCellWithReuseIdentifier:(NSString *)identifier forRow:(NSInteger)row
-{
-    return [self.collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-}
-
-- (void)registerClass:(Class)cellClass forCellWithReuseIdentifier:(NSString *)identifier
-{
-    [self.collectionView registerClass:cellClass forCellWithReuseIdentifier:identifier];
-    self.reusableIdentifier = identifier;
-}
-
-- (void)registerClass:(nullable Class)viewClass forFooterWithReuseIdentifier:(NSString *)identifier {
-    [self.collectionView registerClass:viewClass forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:identifier];
-    self.reusableFooterIdentifier = identifier;
-}
-
-- (__kindof UICollectionReusableView *)dequeueReusableEelementKindOfFooterwithReuseIdentifier:(NSString *)identifier forIndex:(NSInteger)index {
-    return [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:identifier forIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-}
 
 #pragma mark - getter & setter
 - (void)setEmptyImage:(UIImage *)emptyImage {
@@ -471,7 +468,15 @@ static NSInteger const totalCollectionViewCellCount = 200;
 
 - (NSInteger)totalBannerItemsCount {
     
-    return self.cycleScrollEnable?(([self _imageDataSources].count > 1)?([self _imageDataSources].count * self.repeatCount):[self _imageDataSources].count):([self _imageDataSources].count);
+    if (self.cycleScrollEnable) {
+        if ([self _imageDataSources].count > 1) {
+            return [self _imageDataSources].count * self.repeatCount;
+        } else {
+            return [self _imageDataSources].count;
+        }
+    } else {
+        return [self _imageDataSources].count;
+    }
 }
 
 - (BOOL)autoScroll {
@@ -525,6 +530,5 @@ static NSInteger const totalCollectionViewCellCount = 200;
     self.collectionView.delegate = nil;
     self.collectionView.dataSource = nil;
 }
-
 
 @end
