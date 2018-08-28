@@ -19,6 +19,9 @@
 		814DFD50213011A400A1FE3B /* MYBannerCycleViewDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 814DFD4F213011A400A1FE3B /* MYBannerCycleViewDemoUITests.m */; };
 		814DFD602130121F00A1FE3B /* UIView+Addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 814DFD5F2130121F00A1FE3B /* UIView+Addition.m */; };
 		814DFD632130126400A1FE3B /* MYBannerCycleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 814DFD622130126400A1FE3B /* MYBannerCycleView.m */; };
+		81F78301213529AC00662483 /* MYBannerFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 81F78300213529AC00662483 /* MYBannerFooterView.m */; };
+		81F7830321352A5900662483 /* MYBannerCycleViewHeader.h in Sources */ = {isa = PBXBuildFile; fileRef = 81F7830221352A0B00662483 /* MYBannerCycleViewHeader.h */; };
+		81F7830521352F5200662483 /* MYBannerCycleView.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 81F7830421352F5200662483 /* MYBannerCycleView.bundle */; };
 		C5EABEC3D2A661BCA187D7AC /* libPods-MYBannerCycleViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFEE2944E05C48FB4FB1B58 /* libPods-MYBannerCycleViewDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +69,10 @@
 		814DFD5F2130121F00A1FE3B /* UIView+Addition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+Addition.m"; sourceTree = "<group>"; };
 		814DFD612130126400A1FE3B /* MYBannerCycleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MYBannerCycleView.h; sourceTree = "<group>"; };
 		814DFD622130126400A1FE3B /* MYBannerCycleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MYBannerCycleView.m; sourceTree = "<group>"; };
+		81F782FF213529AC00662483 /* MYBannerFooterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MYBannerFooterView.h; sourceTree = "<group>"; };
+		81F78300213529AC00662483 /* MYBannerFooterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MYBannerFooterView.m; sourceTree = "<group>"; };
+		81F7830221352A0B00662483 /* MYBannerCycleViewHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MYBannerCycleViewHeader.h; sourceTree = "<group>"; };
+		81F7830421352F5200662483 /* MYBannerCycleView.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MYBannerCycleView.bundle; sourceTree = "<group>"; };
 		9F7A470CACA83503CF06795D /* Pods-MYBannerCycleViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MYBannerCycleViewDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-MYBannerCycleViewDemo/Pods-MYBannerCycleViewDemo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -136,6 +143,8 @@
 				814DFD2F213011A100A1FE3B /* ViewController.m */,
 				325BED2221329967002EB0D5 /* MYBannerCycleViewCell.h */,
 				325BED2321329967002EB0D5 /* MYBannerCycleViewCell.m */,
+				81F782FF213529AC00662483 /* MYBannerFooterView.h */,
+				81F78300213529AC00662483 /* MYBannerFooterView.m */,
 				814DFD31213011A100A1FE3B /* Main.storyboard */,
 				814DFD34213011A400A1FE3B /* Assets.xcassets */,
 				814DFD36213011A400A1FE3B /* LaunchScreen.storyboard */,
@@ -172,6 +181,8 @@
 				814DFD622130126400A1FE3B /* MYBannerCycleView.m */,
 				325BED2521329D83002EB0D5 /* MYPageControl.h */,
 				325BED2621329D83002EB0D5 /* MYPageControl.m */,
+				81F7830221352A0B00662483 /* MYBannerCycleViewHeader.h */,
+				81F7830421352F5200662483 /* MYBannerCycleView.bundle */,
 			);
 			path = MYBannerCycleView;
 			sourceTree = "<group>";
@@ -294,6 +305,7 @@
 				814DFD38213011A400A1FE3B /* LaunchScreen.storyboard in Resources */,
 				814DFD35213011A400A1FE3B /* Assets.xcassets in Resources */,
 				814DFD33213011A100A1FE3B /* Main.storyboard in Resources */,
+				81F7830521352F5200662483 /* MYBannerCycleView.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +351,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81F7830321352A5900662483 /* MYBannerCycleViewHeader.h in Sources */,
 				814DFD602130121F00A1FE3B /* UIView+Addition.m in Sources */,
 				325BED2421329967002EB0D5 /* MYBannerCycleViewCell.m in Sources */,
 				814DFD30213011A100A1FE3B /* ViewController.m in Sources */,
@@ -346,6 +359,7 @@
 				814DFD3B213011A400A1FE3B /* main.m in Sources */,
 				325BED2721329D83002EB0D5 /* MYPageControl.m in Sources */,
 				814DFD2D213011A100A1FE3B /* AppDelegate.m in Sources */,
+				81F78301213529AC00662483 /* MYBannerFooterView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,252 +9,399 @@
 #import "MYBannerCycleView.h"
 #import "UIView+Addition.h"
 
-@interface MYBannerCycleView ()<UICollectionViewDelegate,UICollectionViewDataSource>
+static NSInteger const totalCollectionViewCellCount = 200;
 
-@property (nonatomic, assign) NSInteger multiplier;
+#define BANNER_FOOTER_HEIGHT 49.0
 
-@property (nonatomic, strong) UICollectionView *collectionView;
+@interface MYBannerCycleView () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout> {
+    UICollectionView *_collectionView;
+    UICollectionViewFlowLayout *_flowLayout;
+}
 
-@property (nonatomic, assign) NSInteger itemCount;
+@property (nonatomic, weak) NSTimer *timer;
+@property (nonatomic, assign) NSInteger totalBannerItemsCount;
+@property (nonatomic, strong) NSArray *showNewDatasource;
 
-@property (nonatomic, assign) NSInteger index;
-
-@property (nonatomic, strong) NSMutableDictionary *cellClassDictionary;
-
-@property (nonatomic, strong) NSMutableDictionary *cellReusableDictionary;
-
+/**
+ cell 重用标识符
+ */
 @property (nonatomic, strong) NSString *reusableIdentifier;
 
-@property (nonatomic, assign) NSInteger visibleRow;
-
-@property (nonatomic, strong) NSTimer *myTimer;
+/**
+ footer 重用标识符
+ */
+@property (nonatomic, strong) NSString *reusableFooterIdentifier;
 
 @end
 
 @implementation MYBannerCycleView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    if (self = [super initWithFrame:frame]) {
-        self.itemSpace = 0;
-        self.cycleEnabled = YES;
-        [self setup];
+@synthesize autoScroll = _autoScroll;
+@synthesize cycleScrollEnable = _cycleScrollEnable;
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self _initSetting];
+        [self addSubview:self.collectionView];
     }
     return self;
 }
 
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-    [self setup];
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        [self _initSetting];
+        [self addSubview:self.collectionView];
+    }
+    return self;
 }
 
-- (void)setup
-{
-    self.collectionView.frame = self.bounds;
-    [self addSubview:self.collectionView];
+- (void)reloadData {
     
-    self.collectionView.clipsToBounds = NO;
-    self.clipsToBounds = NO;
+    [self invalidateTimer];
+    self.showNewDatasource = [self _getImageDataSources];
+    
+    // Hidden when data source is greater than zero
+    self.backgroundImageView.hidden = ([self _imageDataSources].count > 0);
+    
+    if ([self _imageDataSources].count > 1) {
+        self.collectionView.scrollEnabled = YES;
+        [self setAutoScroll:self.autoScroll];
+    } else {
+        
+        if ([self _imageDataSources].count == 0) { self.showFooter = NO; }
+        
+        BOOL isCan = ([self _imageDataSources].count == 0)?NO:(self.showFooter?YES:NO);
+        
+        self.collectionView.scrollEnabled = isCan;
+        
+        [self invalidateTimerWhenAutoScroll];
+    }
+    
+    [self _setFooterViewCanShow:self.showFooter];
+    
+    [self.collectionView reloadData];
 }
 
-- (void)layoutSubviews
-{
+
+/** Initialize the default settings */
+- (void)_initSetting{
+    
+    self.backgroundColor = [UIColor whiteColor];
+    _autoDuration = 3.0;
+    _autoScroll = YES;
+    _cycleScrollEnable = YES;
+    _showFooter = NO;
+}
+
+#pragma mark - Setter && Getter
+
+
+#pragma mark - layoutSubviews
+- (void)layoutSubviews{
     [super layoutSubviews];
     
-    CGRect frame = self.bounds;
-    if (frame.size.width > 0 && frame.size.height > 0) {
-        self.collectionView.frame = frame;
+    self.dataSource = self.dataSource;
+    [super layoutSubviews];
+    
+    self.flowLayout.itemSize = self.frame.size;
+    
+    self.collectionView.frame = self.bounds;
+    
+    if (self.collectionView.contentOffset.x == 0 &&  self.totalBannerItemsCount) {
+        NSInteger targetIndex = self.cycleScrollEnable?(self.totalBannerItemsCount * 0.5):(0);
+        [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
+    }
+    
+    if (self.backgroundImageView) {
+        self.backgroundImageView.frame = self.bounds;
     }
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview
-{
-    [super willMoveToSuperview:newSuperview];
-    
-    if ([self.dataSource respondsToSelector:@selector(numberOfRowsInCycleView:)]) {
-        self.itemCount = [self.dataSource numberOfRowsInCycleView:self];
+#pragma mark - Resolve compatibility optimization issues
+- (void)willMoveToSuperview:(UIView *)newSuperview{
+    if (!newSuperview) {
+        [self invalidateTimer];
     }
-    [self startTimer];
+}
+
+- (void)scrollToIndex:(NSInteger)index animation:(BOOL)animation {
+    if (self.showNewDatasource.count == 0) {
+        return;
+        
+    }
+    if (index >= 0 && index < self.showNewDatasource.count) {
+        if (self.autoScroll) {
+            [self invalidateTimer];
+        }
+        
+        [self _scrollToIndex:((int)(self.totalBannerItemsCount * 0.5 + index)) animated:animation];
+        
+        if (self.autoScroll) {
+            [self _setupTimer];
+        }
+    }
+}
+
+- (void)adjustBannerViewWhenCardScreen{
+    
+    long targetIndex = [self _currentPageIndex];
+    if (targetIndex < self.totalBannerItemsCount) {
+        [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
+    }
 }
 
 #pragma mark - UICollectionViewDataSource
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    if ([self.dataSource respondsToSelector:@selector(numberOfRowsInCycleView:)]) {
-        self.itemCount = [self.dataSource numberOfRowsInCycleView:self];
-    }
-    return self.itemCount * self.multiplier;
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return self.totalBannerItemsCount;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionViewCell *showView = nil;
-    self.visibleRow = indexPath.row;
-    if ([self.dataSource respondsToSelector:@selector(cycleView:cellForItemAtRow:)]) {
-        showView = [self.dataSource cycleView:self cellForItemAtRow:indexPath.row % self.itemCount];
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.reusableIdentifier forIndexPath:indexPath];
+    
+    long itemIndex = [self _getRealIndexFromCurrentCellIndex:indexPath.item];
+    
+    if ([self.dataSource cycleView:self cellForItemAtRow:itemIndex]) {
+        return cell;
     }
     
-    return showView;
+    return cell;
 }
 
-#pragma mark - UICollectionViewDelegateFlowLayout
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [self itemSizeWithIndex:indexPath.row % self.itemCount];
+// Setting Footer Size
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section{
+    return CGSizeMake((self.showFooter && [self _imageDataSources].count != 0)?[self _bannerViewFooterHeight]:0.0f, self.frame.size.height);
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
-{
-    return self.itemSpace;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
-{
-    return self.itemSpace;
-}
-
-#pragma mark - UICollectionViewDelegate
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([self.delegate respondsToSelector:@selector(cycleView:didSelectItemAtRow:)]) {
-        [self.delegate cycleView:self didSelectItemAtRow:indexPath.row % self.itemCount];
+// Footer
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    if (kind == UICollectionElementKindSectionFooter) {
+        
+        UICollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:self.reusableFooterIdentifier forIndexPath:indexPath];
+        
+        if ([self.dataSource respondsToSelector:@selector(viewForSupplementaryElementOfFooter:)]) {
+            footer = [self.dataSource viewForSupplementaryElementOfFooter:self];
+        }
+        return footer;
     }
+    return nil;
 }
 
 #pragma mark - UIScrollViewDelegate
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    [self adjustCollectionView];
-    if ([self.delegate respondsToSelector:@selector(cycleView:didScrollToItemAtRow:)]) {
-        [self.delegate cycleView:self didScrollToItemAtRow:self.index];
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cycleView:didSelectItemAtIndex:)]) {
+        [self.delegate cycleView:self didSelectItemAtIndex:[self _getRealIndexFromCurrentCellIndex:indexPath.item]];
+    }
+    if (self.didSelectItemAtIndexBlock) {
+        self.didSelectItemAtIndexBlock([self _getRealIndexFromCurrentCellIndex:indexPath.item]);
     }
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    if (self.timeInterval > 0) {
-        [self pauseTimer];
-    }
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    if (self.timeInterval > 0) {
-        [self resumeTimer];
-    }
-}
-
-#pragma mark - private methods
-- (void)adjustCollectionView
-{
-    [self collectionScrollToIndex:self.itemCount * (NSInteger)(self.multiplier / 2) + self.index animation:NO];
-}
-
-- (void)collectionScrollToIndex:(NSInteger)index animation:(BOOL)animation
-{
-    if (index < self.itemCount * self.multiplier && index >= 0) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:animation];
-    }
-}
-
-- (void)startTimer
-{
-    [self stopTimer];
-    [self.myTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:self.timeInterval]];
-}
-
-- (void)pauseTimer
-{
-    if (![self.myTimer isValid]) {
-        return;
-    }
-    [self.myTimer setFireDate:[NSDate distantFuture]];
-}
-
-- (void)stopTimer
-{
-    if ([self.myTimer isValid]) {
-        [self.myTimer invalidate];
-        self.myTimer = nil;
-    }
-}
-
-- (void)resumeTimer
-{
-    if (![self.myTimer isValid]) {
-        return;
-    }
-    [self.myTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:self.timeInterval]];
-}
-
-#pragma mark - public methods
-- (void)reloadData
-{
-    if (self.bounds.size.width > 0 && self.bounds.size.height > 0) {
-        self.collectionView.frame = self.bounds;
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+    if (![self _imageDataSources].count) return;
+    int itemIndex = [self _currentPageIndex];
+    int indexOnPageControl = [self _getRealIndexFromCurrentCellIndex:itemIndex];
+    
+    // 手动退拽时左右两端
+    if (scrollView == self.collectionView && scrollView.isDragging && self.cycleScrollEnable) {
+        NSInteger targetIndex = self.totalBannerItemsCount * 0.5;
+        if (itemIndex == 0) { // top
+            [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
+        }else if (itemIndex == (self.totalBannerItemsCount - 1)){ // bottom
+            targetIndex -= 1;
+            [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
+        }
     }
     
-    [self.collectionView reloadData];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self adjustCollectionView];
-        [self scrollToIndex:0 animation:NO];
-    });
-    
-    if ([self.dataSource respondsToSelector:@selector(numberOfRowsInCycleView:)]) {
-        self.itemCount = [self.dataSource numberOfRowsInCycleView:self];
+    // Footer
+    if (self.showFooter) {
+        static CGFloat lastOffset;
+        CGFloat footerDisplayOffset = (self.collectionView.contentOffset.x - (self.flowLayout.itemSize.width * (self.totalBannerItemsCount - 1)));
+        
+        if (footerDisplayOffset > 0){
+            if (footerDisplayOffset > [self _bannerViewFooterHeight]) {
+                if (lastOffset > 0) return;
+                if ([self.delegate respondsToSelector:@selector(footerViewTriggerStatus:)]) {
+                    [self.delegate footerViewTriggerStatus:MYBannerViewStatusTrigger];
+                }
+            } else {
+                if (lastOffset < 0) return;
+                if ([self.delegate respondsToSelector:@selector(footerViewTriggerStatus:)]) {
+                    [self.delegate footerViewTriggerStatus:MYBannerViewStatusIdle];
+                }
+            }
+            lastOffset = footerDisplayOffset - [self _bannerViewFooterHeight];
+        }
     }
-    [self startTimer];
 }
 
-- (void)scrollToIndex:(NSInteger)index animation:(BOOL)animation
-{
-    [self collectionScrollToIndex:self.itemCount * (NSInteger)(self.multiplier / 2) + index animation:animation];
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    [self invalidateTimerWhenAutoScroll];
 }
 
-- (void)scrollToNextIndex
-{
-    [self adjustCollectionView];
-    NSInteger nextIndex = self.index;
-    if (nextIndex + 1 >= self.itemCount) {
-        nextIndex = 0;
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
+    [self startTimerWhenAutoScroll];
+    
+    if (self.showFooter) {
+        CGFloat footerDisplayOffset = (self.collectionView.contentOffset.x - (self.flowLayout.itemSize.width * (self.totalBannerItemsCount - 1)));
+        
+        if (footerDisplayOffset > [self _bannerViewFooterHeight]) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(cycleViewTriggerForFooter:)]) {
+                [self.delegate cycleViewTriggerForFooter:self];
+            }
+            
+            if (self.didEndTriggerFooterBlock) {
+                self.didEndTriggerFooterBlock();
+            }
+        }
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self scrollViewDidEndScrollingAnimation:self.collectionView];
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
+    if (![self _imageDataSources].count) return;
+    int itemIndex = [self _currentPageIndex];
+    int indexOnPageControl = [self _getRealIndexFromCurrentCellIndex:itemIndex];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cycleView:didScrollToItemAtIndex:)]) {
+        [self.delegate cycleView:self didScrollToItemAtIndex:indexOnPageControl];
+    }
+    if (self.didScroll2IndexBlock) {
+        self.didScroll2IndexBlock(indexOnPageControl);
+    }
+}
+
+#pragma mark - Private function method
+
+/** install Timer */
+- (void)_setupTimer{
+    
+    [self invalidateTimer];
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:self.autoDuration target:self selector:@selector(_automaticScrollAction) userInfo:nil repeats:YES];
+    _timer = timer;
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+}
+
+/** stop timer */
+- (void)invalidateTimer{
+    
+    [_timer invalidate];
+    _timer = nil;
+}
+
+/** stop timer api */
+- (void)invalidateTimerWhenAutoScroll{
+    if (self.autoScroll) {
+        [self invalidateTimer];
+    }
+}
+
+/** restart timer api */
+- (void)startTimerWhenAutoScroll{
+    if (self.autoScroll) {
+        [self _setupTimer];
+    }
+}
+
+- (void)_automaticScrollAction{
+    
+    if (self.totalBannerItemsCount == 0) return;
+    int currentIndex = [self _currentPageIndex];
+    if (self.bannerViewScrollDirection == BannerViewDirectionLeft || self.bannerViewScrollDirection == BannerViewDirectionTop) {
+        [self _scrollToIndex:(currentIndex + 1) animated:YES];
+    }else if (self.bannerViewScrollDirection == BannerViewDirectionRight || self.bannerViewScrollDirection == BannerViewDirectionBottom){
+        if ((currentIndex - 1) < 0) { // 小于零
+            currentIndex = self.cycleScrollEnable?(self.totalBannerItemsCount * 0.5):(0);
+            [self _scrollBannerViewToSpecifiedPositionIndex:(currentIndex - 1) animated:NO];
+        }else{
+            [self _scrollToIndex:(currentIndex - 1) animated:YES];
+        }
+    }
+}
+
+- (void)_scrollToIndex:(int)targetIndex animated:(BOOL)animated{
+    
+    if (targetIndex >= self.totalBannerItemsCount) {  // 超过最大
+        targetIndex = self.cycleScrollEnable?(self.totalBannerItemsCount * 0.5):(0);
+        [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:NO];
+    }else{
+        [self _scrollBannerViewToSpecifiedPositionIndex:targetIndex animated:animated];
+    }
+}
+
+/** current page index */
+- (int)_currentPageIndex{
+    
+    if (self.collectionView.width == 0 || self.collectionView.height == 0) {return 0;}
+    int index = 0;
+    if (self.flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+        index = (self.collectionView.contentOffset.x + self.flowLayout.itemSize.width * 0.5) / self.flowLayout.itemSize.width;
     } else {
-        nextIndex++;
+        index = (self.collectionView.contentOffset.y + self.flowLayout.itemSize.height * 0.5) / self.flowLayout.itemSize.height;
     }
-    
-    if ([self.delegate respondsToSelector:@selector(cycleView:didScrollToItemAtRow:)]) {
-        [self.delegate cycleView:self didScrollToItemAtRow:nextIndex];
-    }
-    
-    [self.collectionView setContentOffset:CGPointMake(self.collectionView.contentOffset.x + [self itemSizeWithIndex:nextIndex].width + self.itemSpace, self.collectionView.contentOffset.y) animated:YES];
+    return MAX(0, index);
 }
 
-- (void)scrollToPreviousIndex
-{
-    [self adjustCollectionView];
-    NSInteger previousIndex = self.index;
-    if (previousIndex == 0) {
-        previousIndex = self.itemCount - 1;
-    } else {
-        previousIndex--;
-    }
-    
-    if ([self.delegate respondsToSelector:@selector(cycleView:didScrollToItemAtRow:)]) {
-        [self.delegate cycleView:self didScrollToItemAtRow:previousIndex];
-    }
-    
-    [self.collectionView setContentOffset:CGPointMake(self.collectionView.contentOffset.x - [self itemSizeWithIndex:previousIndex].width - self.itemSpace, self.collectionView.contentOffset.y) animated:YES];
+/** current real index */
+- (int)_getRealIndexFromCurrentCellIndex:(NSInteger)cellIndex{
+    return (int)cellIndex % [self _imageDataSources].count;
 }
 
-- (CGSize)itemSizeWithIndex:(NSInteger)index
-{
-    return self.collectionView.bounds.size;
+- (NSArray *)_imageDataSources{
+    return self.showNewDatasource;
+}
+
+/** Get new data from the proxy method */
+- (NSArray *)_getImageDataSources{
+    if (self.dataSource && [self.dataSource respondsToSelector:@selector(bannerViewImages:)]) {
+        return [self.dataSource bannerViewImages:self];
+    }
+    return @[];
+}
+
+/** Footer Height */
+- (CGFloat)_bannerViewFooterHeight{
+    if (self.dataSource && [self.dataSource respondsToSelector:@selector(cycleViewFooterViewHeight:)]) {
+        return [self.dataSource cycleViewFooterViewHeight:self];
+    }
+    return BANNER_FOOTER_HEIGHT;
+}
+
+/** reload 时控制尾巴的显示和消失 */
+- (void)_setFooterViewCanShow:(BOOL)showFooter{
+    
+    if (showFooter) {
+        self.bannerViewScrollDirection = BannerViewDirectionLeft;
+        self.collectionView.contentInset = UIEdgeInsetsMake(0, 0, 0, -[self _bannerViewFooterHeight]);
+    }else{
+        self.collectionView.contentInset = UIEdgeInsetsZero;
+    }
+    
+    if (self.bannerViewScrollDirection == BannerViewDirectionLeft) {
+        self.collectionView.alwaysBounceHorizontal = showFooter;
+    }else {
+        self.collectionView.accessibilityViewIsModal = showFooter;
+    }
+}
+
+/** Scroll the CollectionView to the specified location */
+- (void)_scrollBannerViewToSpecifiedPositionIndex:(NSInteger)targetIndex animated:(BOOL)animated{
+    NSInteger itemCount = [self.collectionView numberOfItemsInSection:0];
+    if (targetIndex < itemCount) {
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:targetIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:animated];
+    }
 }
 
 - (__kindof UICollectionViewCell *)dequeueReusableCellWithReuseIdentifier:(NSString *)identifier forRow:(NSInteger)row
 {
-    
-    return [self.collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:[NSIndexPath indexPathForRow:self.visibleRow inSection:0]];
+    return [self.collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 }
 
 - (void)registerClass:(Class)cellClass forCellWithReuseIdentifier:(NSString *)identifier
@@ -263,85 +410,121 @@
     self.reusableIdentifier = identifier;
 }
 
-#pragma mark - getter and setter
-- (UICollectionView *)collectionView
-{
-    if (_collectionView == nil) {
-        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-        [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
-        flowLayout.minimumInteritemSpacing = self.itemSpace;
-        flowLayout.minimumLineSpacing = self.itemSpace;
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
-        _collectionView.delegate = self;
-        _collectionView.dataSource = self;
-        _collectionView.showsHorizontalScrollIndicator = NO;
-        _collectionView.backgroundColor = [UIColor clearColor];
+- (void)registerClass:(nullable Class)viewClass forFooterWithReuseIdentifier:(NSString *)identifier {
+    [self.collectionView registerClass:viewClass forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:identifier];
+    self.reusableFooterIdentifier = identifier;
+}
+
+- (__kindof UICollectionReusableView *)dequeueReusableEelementKindOfFooterwithReuseIdentifier:(NSString *)identifier forIndex:(NSInteger)index {
+    return [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:identifier forIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+}
+
+#pragma mark - getter & setter
+- (void)setEmptyImage:(UIImage *)emptyImage {
+    _emptyImage = emptyImage;
+    if (emptyImage) {
+        self.backgroundImageView.image = emptyImage;
+    }
+}
+
+- (void)setAutoScroll:(BOOL)autoScroll {
+    
+    _autoScroll = autoScroll;
+    [self invalidateTimer];
+    if (autoScroll) {
+        [self _setupTimer];
+    }
+}
+
+- (void)setBannerViewScrollDirection:(BannerViewDirection)bannerViewScrollDirection {
+    
+    if (self.showFooter && bannerViewScrollDirection != BannerViewDirectionLeft) {
+        bannerViewScrollDirection = BannerViewDirectionLeft;
+    }
+    
+    _bannerViewScrollDirection = bannerViewScrollDirection;
+    
+    if (bannerViewScrollDirection == BannerViewDirectionLeft || bannerViewScrollDirection == BannerViewDirectionRight) {
+        self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    } else if (bannerViewScrollDirection == BannerViewDirectionTop || bannerViewScrollDirection == BannerViewDirectionBottom) {
+        self.flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    }
+}
+
+- (void)setAutoDuration:(CGFloat)autoDuration {
+    
+    _autoDuration = autoDuration;
+    [self setAutoScroll:self.autoScroll];
+}
+
+- (NSInteger)repeatCount {
+    if (_repeatCount <= 0) {
+        return totalCollectionViewCellCount;
+    } else {
+        if (_repeatCount % 2 != 0) {
+            return _repeatCount + 1;
+        } else {
+            return _repeatCount;
+        }
+    }
+}
+
+- (NSInteger)totalBannerItemsCount {
+    
+    return self.cycleScrollEnable?(([self _imageDataSources].count > 1)?([self _imageDataSources].count * self.repeatCount):[self _imageDataSources].count):([self _imageDataSources].count);
+}
+
+- (BOOL)autoScroll {
+    if (self.showFooter) {
+        return NO;
+    }
+    return _autoScroll;
+}
+
+- (BOOL)cycleScrollEnable {
+    if (self.showFooter) {
+        return NO;
+    }
+    return _cycleScrollEnable;
+}
+
+- (UIImageView *)backgroundImageView {
+    if (!_backgroundImageView) {
+        _backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        _backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _backgroundImageView.clipsToBounds = YES;
+        [self insertSubview:_backgroundImageView belowSubview:self.collectionView];
+    }
+    return _backgroundImageView;
+}
+
+- (UICollectionViewFlowLayout *)flowLayout {
+    if (!_flowLayout) {
+        _flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        _flowLayout.minimumLineSpacing = 0.0f;
+        _flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    }
+    return _flowLayout;
+}
+
+- (UICollectionView *)collectionView {
+    if (!_collectionView) {
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:self.flowLayout];
         _collectionView.pagingEnabled = YES;
+        _collectionView.showsHorizontalScrollIndicator = NO;
+        _collectionView.showsVerticalScrollIndicator = NO;
+        _collectionView.backgroundColor = [UIColor clearColor];
+        _collectionView.dataSource = self;
+        _collectionView.delegate = self;
+        _collectionView.scrollsToTop = NO;
     }
     return _collectionView;
 }
 
-- (NSInteger)index
-{
-    NSArray *itemIndexPaths = [self.collectionView indexPathsForVisibleItems];
-    
-    for (NSIndexPath *indexPath in itemIndexPaths) {
-        UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
-        if ((cell.frame.origin.x >= self.collectionView.contentOffset.x) && (CGRectGetMaxX(cell.frame) <= self.collectionView.contentOffset.x + self.collectionView.bounds.size.width)) {
-            _index = indexPath.row % self.itemCount;
-            break;
-        }
-    }
-    
-    return _index;
+- (void)dealloc {
+    self.collectionView.delegate = nil;
+    self.collectionView.dataSource = nil;
 }
 
-- (NSMutableDictionary *)cellClassDictionary
-{
-    if (_cellClassDictionary == nil) {
-        _cellClassDictionary = [NSMutableDictionary dictionary];
-    }
-    return _cellClassDictionary;
-}
-
-- (NSMutableDictionary *)cellReusableDictionary
-{
-    if (_cellReusableDictionary == nil) {
-        _cellReusableDictionary = [NSMutableDictionary dictionary];
-    }
-    return _cellReusableDictionary;
-}
-
-- (void)setCycleEnabled:(BOOL)cycleEnabled
-{
-    _cycleEnabled = cycleEnabled;
-    
-    if (cycleEnabled && self.itemCount > 1) {
-        self.multiplier = 20;
-    } else {
-        self.multiplier = 1;
-    }
-    
-    [self.collectionView reloadData];
-}
-
-- (NSTimer *)myTimer
-{
-    if (_myTimer == nil) {
-        _myTimer = [NSTimer scheduledTimerWithTimeInterval:self.timeInterval target:self selector:@selector(scrollToNextIndex) userInfo:nil repeats:YES];
-    }
-    return _myTimer;
-}
-
-- (void)setItemCount:(NSInteger)itemCount
-{
-    _itemCount = itemCount;
-    
-    if (itemCount > 1) {
-        self.multiplier = 20;
-    } else {
-        self.multiplier = 1;
-    }
-}
 
 @end
