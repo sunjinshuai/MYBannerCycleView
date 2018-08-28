@@ -45,9 +45,9 @@
     
     [self addPageControl];
     
-    _pageControl.numberOfPages = self.customBannerViewImages.count;
-    _taobaoControl.numberOfPages = self.customBannerViewImages.count;
-    _bottomPageControl.numberOfPages = self.customBannerViewImages.count;
+    _pageControl.numberOfPages = 6;
+    _taobaoControl.numberOfPages = 6;
+    _bottomPageControl.numberOfPages = 6;
     
     [self.bannerCycleView reloadData];
     [self.taobaoBannerView reloadData];
@@ -115,8 +115,8 @@
 }
 
 #pragma mark - DataSource
-- (NSArray *)bannerViewImages:(MYBannerCycleView *)bannerView {
-    return self.customBannerViewImages;
+- (NSInteger)numberOfRowsInCycleView:(MYBannerCycleView *)cycleView {
+    return 6;
 }
 
 - (UICollectionViewCell *)cycleView:(MYBannerCycleView *)cycleView cellForItemAtRow:(NSInteger)row {
@@ -163,11 +163,5 @@
     NSLog(@"currentIndex-->%d : contentOffset-->%f", currentIndex, contentOffset);
 }
 
-- (NSArray *)customBannerViewImages{
-    return @[@"http://img.zcool.cn/community/01f5ce56e112ef6ac72531cb37bec4.png@900w_1l_2o_100sh.jpg",
-             @"http://img.zcool.cn/community/01c41656cbf3eb32f875520f71f47a.png",
-             @"http://pic.58pic.com/58pic/17/27/94/54d350c57f5f8_1024.jpg"
-             ];
-}
 
 @end
