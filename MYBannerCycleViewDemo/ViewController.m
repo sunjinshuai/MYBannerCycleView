@@ -41,6 +41,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.title = @"自定义轮播图";
+    self.view.backgroundColor = [UIColor whiteColor];
+    
     [self addBannerCycleView];
     
     [self addPageControl];

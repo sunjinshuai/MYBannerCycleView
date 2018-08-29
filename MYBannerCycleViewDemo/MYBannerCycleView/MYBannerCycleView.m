@@ -63,7 +63,7 @@ static NSInteger const totalCollectionViewCellCount = 200;
     return self.totalBannerItemsCount;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.reusableIdentifier forIndexPath:indexPath];
     
@@ -76,7 +76,7 @@ static NSInteger const totalCollectionViewCellCount = 200;
     return cell;
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section{
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
     return CGSizeMake((self.showFooter && self.itemCount != 0)?[self _bannerViewFooterHeight]:0.0f, self.frame.size.height);
 }
 
@@ -95,13 +95,13 @@ static NSInteger const totalCollectionViewCellCount = 200;
 }
 
 #pragma mark - UIScrollViewDelegate
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.delegate && [self.delegate respondsToSelector:@selector(cycleView:didSelectItemAtIndex:)]) {
         [self.delegate cycleView:self didSelectItemAtIndex:[self _getRealIndexFromCurrentCellIndex:indexPath.item]];
     }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
     if (!self.itemCount) {
         return;
@@ -145,11 +145,11 @@ static NSInteger const totalCollectionViewCellCount = 200;
     }
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     [self invalidateTimerWhenAutoScroll];
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
     [self startTimerWhenAutoScroll];
     
@@ -164,11 +164,11 @@ static NSInteger const totalCollectionViewCellCount = 200;
     }
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self scrollViewDidEndScrollingAnimation:self.collectionView];
 }
 
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     if (!self.itemCount) {
         return;
     }
@@ -246,7 +246,7 @@ static NSInteger const totalCollectionViewCellCount = 200;
     }
 }
 
-- (void)adjustBannerViewWhenCardScreen{
+- (void)adjustBannerViewWhenCardScreen {
     
     long targetIndex = [self _currentPageIndex];
     if (targetIndex < self.totalBannerItemsCount) {
@@ -305,21 +305,18 @@ static NSInteger const totalCollectionViewCellCount = 200;
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
 
-/** stop timer */
 - (void)invalidateTimer {
     
     [_timer invalidate];
     _timer = nil;
 }
 
-/** stop timer api */
 - (void)invalidateTimerWhenAutoScroll {
     if (self.autoScroll) {
         [self invalidateTimer];
     }
 }
 
-/** restart timer api */
 - (void)startTimerWhenAutoScroll {
     if (self.autoScroll) {
         [self _setupTimer];
@@ -354,7 +351,6 @@ static NSInteger const totalCollectionViewCellCount = 200;
     }
 }
 
-/** current page index */
 - (int)_currentPageIndex {
     
     if (self.collectionView.width == 0 || self.collectionView.height == 0) {
@@ -369,12 +365,11 @@ static NSInteger const totalCollectionViewCellCount = 200;
     return MAX(0, index);
 }
 
-/** current real index */
+
 - (int)_getRealIndexFromCurrentCellIndex:(NSInteger)cellIndex {
     return (int)cellIndex % self.itemCount;
 }
 
-/** Footer Height */
 - (CGFloat)_bannerViewFooterHeight {
     if (self.dataSource && [self.dataSource respondsToSelector:@selector(cycleViewFooterViewHeight:)]) {
         return [self.dataSource cycleViewFooterViewHeight:self];
@@ -382,7 +377,6 @@ static NSInteger const totalCollectionViewCellCount = 200;
     return BANNER_FOOTER_HEIGHT;
 }
 
-/** reload 时控制尾巴的显示和消失 */
 - (void)_setFooterViewCanShow:(BOOL)showFooter {
     
     if (showFooter) {
@@ -399,7 +393,7 @@ static NSInteger const totalCollectionViewCellCount = 200;
     }
 }
 
-/** Scroll the CollectionView to the specified location */
+
 - (void)_scrollBannerViewToSpecifiedPositionIndex:(NSInteger)targetIndex animated:(BOOL)animated{
     NSInteger itemCount = [self.collectionView numberOfItemsInSection:0];
     if (targetIndex < itemCount) {

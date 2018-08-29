@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32532E502136E1030070DD5E /* MYTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32532E4F2136E1030070DD5E /* MYTestViewController.m */; };
 		325BED2421329967002EB0D5 /* MYBannerCycleViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 325BED2321329967002EB0D5 /* MYBannerCycleViewCell.m */; };
 		325BED2721329D83002EB0D5 /* MYPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 325BED2621329D83002EB0D5 /* MYPageControl.m */; };
 		814DFD2D213011A100A1FE3B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 814DFD2C213011A100A1FE3B /* AppDelegate.m */; };
@@ -44,6 +45,8 @@
 
 /* Begin PBXFileReference section */
 		2AFEE2944E05C48FB4FB1B58 /* libPods-MYBannerCycleViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MYBannerCycleViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		32532E4E2136E1030070DD5E /* MYTestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MYTestViewController.h; sourceTree = "<group>"; };
+		32532E4F2136E1030070DD5E /* MYTestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MYTestViewController.m; sourceTree = "<group>"; };
 		325BED2221329967002EB0D5 /* MYBannerCycleViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MYBannerCycleViewCell.h; sourceTree = "<group>"; };
 		325BED2321329967002EB0D5 /* MYBannerCycleViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MYBannerCycleViewCell.m; sourceTree = "<group>"; };
 		325BED2521329D83002EB0D5 /* MYPageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MYPageControl.h; sourceTree = "<group>"; };
@@ -145,6 +148,8 @@
 				325BED2321329967002EB0D5 /* MYBannerCycleViewCell.m */,
 				81F782FF213529AC00662483 /* MYBannerFooterView.h */,
 				81F78300213529AC00662483 /* MYBannerFooterView.m */,
+				32532E4E2136E1030070DD5E /* MYTestViewController.h */,
+				32532E4F2136E1030070DD5E /* MYTestViewController.m */,
 				814DFD31213011A100A1FE3B /* Main.storyboard */,
 				814DFD34213011A400A1FE3B /* Assets.xcassets */,
 				814DFD36213011A400A1FE3B /* LaunchScreen.storyboard */,
@@ -355,6 +360,7 @@
 				814DFD602130121F00A1FE3B /* UIView+Addition.m in Sources */,
 				325BED2421329967002EB0D5 /* MYBannerCycleViewCell.m in Sources */,
 				814DFD30213011A100A1FE3B /* ViewController.m in Sources */,
+				32532E502136E1030070DD5E /* MYTestViewController.m in Sources */,
 				814DFD632130126400A1FE3B /* MYBannerCycleView.m in Sources */,
 				814DFD3B213011A400A1FE3B /* main.m in Sources */,
 				325BED2721329D83002EB0D5 /* MYPageControl.m in Sources */,
