@@ -1,12 +1,11 @@
 # MYBannerCycleView
 
-**MYBannerCycleView**是用UICollectionView实现的，使用的时候也特别简单，就跟使用UICollectionView一样的清爽。
-
 [![Build Status](https://travis-ci.org/sunjinshuai/MYBannerCycleView.svg?branch=master)](https://travis-ci.org/sunjinshuai/MYBannerCycleView/)
 [![Version](https://img.shields.io/cocoapods/v/MYBannerCycleView.svg?style=flat)](http://cocoapods.org/pods/MYBannerCycleView)
 [![License](https://img.shields.io/cocoapods/l/MYBannerCycleView.svg?style=flat)](http://cocoapods.org/pods/MYBannerCycleView)
 [![Platform](https://img.shields.io/cocoapods/p/MYBannerCycleView.svg?style=flat)](http://cocoapods.org/pods/MYBannerCycleView)
 
+**MYBannerCycleView**是用UICollectionView实现的，使用的时候也特别简单，就跟使用UICollectionView一样的清爽。
 代码规范，结构清晰，个人感觉没有一点冗余代码，欢迎各路大神批评指正，喜欢的可以给star。
 
 ## Usage
