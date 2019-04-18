@@ -8,17 +8,23 @@ PODS:
     - MYKit/Foundation
   - MYKit/UIKit (1.1.2):
     - MYKit/Foundation
+  - SDWebImage (5.0.1):
+    - SDWebImage/Core (= 5.0.1)
+  - SDWebImage/Core (5.0.1)
 
 DEPENDENCIES:
   - MYKit
+  - SDWebImage (~> 5.0.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - MYKit
+    - SDWebImage
 
 SPEC CHECKSUMS:
   MYKit: 338258b9f984b07fe808216d2c77f4f33d3c2379
+  SDWebImage: 27dd2c9ea07a2252f94557c9fbb6105ee94b74c9
 
-PODFILE CHECKSUM: 895f573b2ca394db770b82e60e5c3c2055b35c40
+PODFILE CHECKSUM: ad7c72b0a0947b154798043e198e72012902e77b
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.1

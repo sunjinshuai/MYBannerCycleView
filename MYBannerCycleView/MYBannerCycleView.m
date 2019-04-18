@@ -69,7 +69,7 @@ static NSInteger const totalCollectionViewCellCount = 200;
     
     long itemIndex = [self _getRealIndexFromCurrentCellIndex:indexPath.item];
     
-    if ([self.dataSource cycleView:self cellForItemAtRow:itemIndex]) {
+    if ([self.dataSource cycleView:self cellForItemAtRow:indexPath.item]) {
         return cell;
     }
     
